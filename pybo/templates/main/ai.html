@@ -1,0 +1,30 @@
+{# templates/ai/index.html #}
+{% extends "base.html" %}
+{% block body_class %}hero-page{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='ai.css') }}">
+{% endblock %}
+
+
+{% block content %}
+<section class="hero-section hero-ai">
+    <div class="hero-overlay"></div>
+    <div class="container hero-inner">
+        <h1 class="hero-title">생성형 AI</h1>
+    </div>
+</section>
+
+<div class = 'container mt-4'>
+    <h2 class = 'mb-3'>생성형 AI</h2>
+    <p class = 'text-muted mb-4'> 
+        아래 기능들은 HuggingFace의 사전학습 모델을 이용한 데모입니다.<br>
+        텍스트 생성, 번역, 감성 분석, 개체명 인식, 질의응답 등을 순차적으로 붙여 나갈 예정입니다.
+    </p>
+    <div class = 'alert aleret-info'>
+        아직은 UI 뼈대<br>
+        다음 단계에서 서비스 정립해서 돌아올게요..
+    </div>
+</div>
+{% endblock %}
+

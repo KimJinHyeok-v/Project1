@@ -36,3 +36,6 @@ def privacy():
     return render_template('policy/privacy.html')
 
 
+@bp.route('/ai')
+def ai():
+    return render_template('main/ai.html')

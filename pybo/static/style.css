@@ -335,6 +335,10 @@ body.hero-page .top-menu-auth {
     background: url("/static/images/section2_2.jpg") center 82.7%/cover no-repeat !important;
 }
 
+.hero-section.hero-ai {
+    background: url("/static/images/ai-hero.jfif") center/cover no-repeat !important;
+}
+
 .hero-section.hero-qna {
     background: url("/static/images/hero-qna.jpg") center/cover no-repeat !important;
 }
