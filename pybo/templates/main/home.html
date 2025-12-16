@@ -111,7 +111,7 @@
     <div class="container">
         <div class="row g-4">
 
-            <!-- 카드 2: 이용자 수 예측 -->
+            <!-- 카드 1: 이용자 수 예측 -->
             <div class="col-12 col-md-6">
                 <a href="{{ url_for('main.predict') }}" class="feature-card-link text-decoration-none">
                     <div class="feature-card feature-card-2">
@@ -130,7 +130,7 @@
                 </a>
             </div>
 
-            <!-- 카드 1: 통계 대시보드 -->
+            <!-- 카드 2: 통계 대시보드 -->
             <div class="col-12 col-md-6 mb-4 mb-md-0">
                 <a href="{{ url_for('main.dashboard') }}" class="feature-card-link text-decoration-none">
                     <div class="feature-card feature-card-1">
@@ -148,6 +148,27 @@
                     </div>
                 </a>
             </div>
+
+
+            <!-- 카드 3: 생성형 AI -->
+            <div class="col-12 mt-4">
+                <a href="{{ url_for('main.ai') }}" class="feature-card-link text-decoration-none">
+                    <div class="feature-card feature-card-3">
+                        <div class="feature-card-overlay"></div>
+                        <div class="feature-card-body">
+                            <h2 class="feature-title">생성형 AI</h2>
+                            <p class="feature-desc">
+                                HuggingFace &amp; Llama 3 기반으로<br>
+                                텍스트 생성 · 번역 · 질의응답 · 감성분석을 체험해 보세요.
+                            </p>
+                            <button type="button" class="feature-btn">
+                                생성형 AI 보러가기
+                            </button>
+                        </div>
+                    </div>
+                </a>
+            </div>
+
 
         </div>
     </div>

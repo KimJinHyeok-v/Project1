@@ -328,7 +328,7 @@ body.hero-page .top-menu-auth {
 }
 
 .hero-section.hero-dashboard {
-    background: url("/static/images/hero-dashboard.jpg") center 63% /cover no-repeat !important;
+    background: url("/static/images/section2_1.jpg") center 63% /cover no-repeat !important;
 }
 
 .hero-section.hero-predict {
@@ -336,7 +336,7 @@ body.hero-page .top-menu-auth {
 }
 
 .hero-section.hero-ai {
-    background: url("/static/images/ai-hero.jfif") center/cover no-repeat !important;
+    background: url("/static/images/ai-hero.png") center 45%/cover no-repeat !important;
 }
 
 .hero-section.hero-qna {

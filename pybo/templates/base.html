@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap-icons.css') }}">
+    <!-- <link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.bundle.min.js') }}"> -->
 
     {% block extra_css %}{% endblock %}
 
@@ -97,9 +98,9 @@
 
 <!-- 기본 템플릿에 삽입할 내용 -->
 <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+<!-- <script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script> -->
+<script src="{{ url_for('static', filename='bootstrap.bundle.min.js') }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 {% block script %}
 {% endblock %}
 
