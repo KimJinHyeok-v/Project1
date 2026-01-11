@@ -74,3 +74,19 @@ class Users(db.Model):
     username = db.Column(db.String(150), unique=True, nullable=False)
     password = db.Column(db.String(200), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+
+
+class ChildCenter(db.Model):
+    __tablename__ = "child_center"
+
+    center_id   = db.Column(db.Integer, primary_key=True)
+    district    = db.Column(db.String(30), nullable=False)
+    center_name = db.Column(db.String(200), nullable=False)
+    address     = db.Column(db.String(300), nullable=False)
+    phone       = db.Column(db.String(30))
+    zipcode     = db.Column(db.String(5))
+    fee         = db.Column(db.Integer, nullable=False, default=0)
+    capacity    = db.Column(db.Integer)
+    lat         = db.Column(db.Numeric(10, 7))
+    lon         = db.Column(db.Numeric(10, 7))
+    sat_yn      = db.Column(db.String(1), nullable=False, default="N")

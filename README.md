@@ -244,3 +244,475 @@ DB 연결 상태, 주요 테이블 레코드 수 등을 확인하는 용도입�
 8. 향후 계획 (2차 프로젝트)
 
 Agentic AI / LLM 연동
+```
+childcenter
+├─ .dockerignore
+├─ .flaskenv
+├─ app.db
+├─ check_db.py
+├─ childcenter.zip
+├─ Clean_ML_Report.png
+├─ config.py
+├─ data
+│  ├─ child_centers_clean.json
+│  ├─ GRDP_15~22.csv
+│  ├─ master_2015_2022.csv
+│  ├─ predicted_child_user_2023_2030.csv
+│  ├─ 기초생활수급자_12~24.csv
+│  ├─ 네트워크 - 바로 가기.lnk
+│  ├─ 다문화가구_15~23.csv
+│  ├─ 등록인구(연령별_동별)_14~24.xlsx
+│  ├─ 시도_시군구_월별_이혼_11~24.xlsx
+│  ├─ 아동복지시설_06~24.csv
+│  ├─ 저소득_한부모가족_15~23.csv
+│  ├─ 지역아동센터_자치구별_데이터.xlsx
+│  ├─ 출생아수_06~24.csv
+│  └─ 학생_1만명당_사설학원수_10~24.csv
+├─ docker-compose.yml
+├─ dockerfile
+├─ Dockerfile.runtime
+├─ Dockerfile.worker
+├─ docs
+│  ├─ README.md
+│  ├─ requirement.txt
+│  ├─ SequenceDiagram.png
+│  ├─ UsecaseDiagram.png
+│  ├─ 개발스케줄,업무분장.xlsx
+│  ├─ 머신러닝 결과 보고서.docx
+│  ├─ 요구사항 정의서.xlsx
+│  ├─ 요구사항분석서.docx
+│  └─ 화면설계서.pptx
+├─ EDA.ipynb
+├─ Final_ML_Project_Report.png
+├─ final_model_performance_report.png
+├─ final_professional_report.png
+├─ final_project_report.png
+├─ folder_structure.txt
+├─ handler.py
+├─ insert_future_region_data.py
+├─ insert_region_data.py
+├─ instance
+│  ├─ app.db
+│  └─ local_dev.db
+├─ load_child_centers.py
+├─ migrations
+│  ├─ alembic.ini
+│  ├─ env.py
+│  ├─ README
+│  ├─ script.py.mako
+│  └─ versions
+│     ├─ 995318d08496_initial_tables.py
+│     └─ fee148399c62_add_users_and_qna_tables.py
+├─ models.ipynb
+├─ model_comparison_final.png
+├─ predicted_child_user_2023_2030_cagr.csv
+├─ preprocessing.ipynb
+├─ pybo
+│  ├─ forms.py
+│  ├─ ml
+│  │  ├─ future_predict.py
+│  │  ├─ future_predict_backup.py
+│  │  ├─ model_xgb.pkl
+│  │  ├─ predictor.py
+│  │  └─ python
+│  ├─ models.py
+│  ├─ rag_docs
+│  │  └─ 지역아동센터 지원 사업안내(정제본).txt
+│  ├─ rag_store
+│  │  ├─ 84cfeb60-01b8-4dcf-8360-32f2f8c75bf6
+│  │  │  ├─ data_level0.bin
+│  │  │  ├─ header.bin
+│  │  │  ├─ length.bin
+│  │  │  └─ link_lists.bin
+│  │  ├─ bde767b0-add2-4f07-a5d9-5aa020c43f38
+│  │  │  ├─ data_level0.bin
+│  │  │  ├─ header.bin
+│  │  │  ├─ length.bin
+│  │  │  └─ link_lists.bin
+│  │  └─ chroma.sqlite3
+│  ├─ service
+│  │  ├─ auth_service.py
+│  │  ├─ brief_facts_service.py
+│  │  ├─ data_service.py
+│  │  ├─ lc_chains.py
+│  │  ├─ lc_llm.py
+│  │  ├─ qna_service.py
+│  │  ├─ question_repository.py
+│  │  ├─ rag_ingest.py
+│  │  ├─ rag_ingest_db.py
+│  │  ├─ rag_service.py
+│  │  ├─ region_repository.py
+│  │  ├─ runpod_service.py
+│  │  ├─ user_repository.py
+│  │  └─ __init__.py
+│  ├─ static
+│  │  ├─ bootstrap-4.6.2-dist.zip
+│  │  ├─ bootstrap-icons.css
+│  │  ├─ bootstrap.bundle.js
+│  │  ├─ bootstrap.bundle.js.map
+│  │  ├─ bootstrap.bundle.min.js
+│  │  ├─ bootstrap.bundle.min.js.map
+│  │  ├─ bootstrap.min.css
+│  │  ├─ bootstrap.min.js
+│  │  ├─ css
+│  │  │  ├─ ai.css
+│  │  │  ├─ ai2.css
+│  │  │  ├─ base.css
+│  │  │  ├─ dashboard.css
+│  │  │  ├─ home.css
+│  │  │  ├─ predict.css
+│  │  │  └─ theme.css
+│  │  ├─ fonts
+│  │  │  ├─ bootstrap-icons.woff
+│  │  │  └─ bootstrap-icons.woff2
+│  │  ├─ images
+│  │  │  ├─ ai-hero.png
+│  │  │  ├─ bigdata.jpg
+│  │  │  ├─ carousel1.jpg
+│  │  │  ├─ carousel1_1.jpg
+│  │  │  ├─ carousel2.jpg
+│  │  │  ├─ carousel2_1.jpg
+│  │  │  ├─ carousel3.jpg
+│  │  │  ├─ find_image
+│  │  │  │  ├─ 27Qpq7pqCRfVf9Grzbgv9n-840-80.jpg.webp
+│  │  │  │  ├─ 61d3ad52a9f76fcc29b4cfb81e0f21ad.jpg
+│  │  │  │  ├─ ai-generated-8005084_1920.png
+│  │  │  │  ├─ ai-pennwest-2024.jpg
+│  │  │  │  ├─ Arte delle Equazioni Scientifiche Fantastiche di….jfif
+│  │  │  │  ├─ Artificial intelligence may be the most intricate….jfif
+│  │  │  │  ├─ deng-xiang--WXQm_NTK0U-unsplash.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_01.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_02.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_03.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_04.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_05.png
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_06.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_07.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_08.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_09.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_10.jpg
+│  │  │  │  ├─ luke-chesser-JKUTrJ4vK00-unsplash.jpg
+│  │  │  │  ├─ pexels-rdne-7947663.jpg
+│  │  │  │  ├─ Skærmbillede-2017-09-04-kl.-16.00.22.png
+│  │  │  │  ├─ vecteezy_digital-business-image-with-graphs-and-diagrams-over-blue_25500634.jpg
+│  │  │  │  ├─ What the world will be like in 30 years, according….jfif
+│  │  │  │  └─ 🧠 Next-gen technology analyzes writing style DNA….jfif
+│  │  │  ├─ hero-introduce.jpg
+│  │  │  ├─ hero-predict.png
+│  │  │  ├─ hero-qna.jpg
+│  │  │  ├─ logo-black.png
+│  │  │  ├─ logo.png
+│  │  │  ├─ logo2.png
+│  │  │  ├─ logo3.png
+│  │  │  ├─ logo4.png
+│  │  │  ├─ logo5.png
+│  │  │  ├─ logo_cropped.png
+│  │  │  ├─ privacy-hero.jpg
+│  │  │  ├─ section2_1.jpg
+│  │  │  ├─ section2_2.jpg
+│  │  │  ├─ section3_qna.jpg
+│  │  │  └─ terms-hero.webp
+│  │  ├─ jquery-3.7.1.min.js
+│  │  ├─ js
+│  │  │  ├─ ai2.js
+│  │  │  ├─ Chart-bar.html
+│  │  │  ├─ Chart-line.html
+│  │  │  ├─ Chart-pie.html
+│  │  │  ├─ dashboard.js
+│  │  │  ├─ Multi-line.html
+│  │  │  └─ predict.js
+│  │  └─ style.css
+│  ├─ templates
+│  │  ├─ ai
+│  │  ├─ auth
+│  │  │  ├─ find_id.html
+│  │  │  ├─ login.html
+│  │  │  ├─ logout.html
+│  │  │  ├─ reset_password_change.html
+│  │  │  ├─ reset_password_verify.html
+│  │  │  └─ signup.html
+│  │  ├─ base.html
+│  │  ├─ form_errors.html
+│  │  ├─ main
+│  │  │  ├─ ai.html
+│  │  │  ├─ ai2.html
+│  │  │  ├─ dashboard.html
+│  │  │  ├─ home.html
+│  │  │  ├─ introduce.html
+│  │  │  └─ predict.html
+│  │  ├─ partials
+│  │  │  ├─ intro_content.html
+│  │  │  ├─ seoul_map.svg
+│  │  │  └─ seoul_map1.svg
+│  │  ├─ policy
+│  │  │  ├─ privacy.html
+│  │  │  └─ terms.html
+│  │  └─ question
+│  │     ├─ qna.html
+│  │     ├─ question_detail.html
+│  │     ├─ question_form.html
+│  │     └─ question_list.html
+│  ├─ views
+│  │  ├─ ai2_chat_views.py
+│  │  ├─ ai2_hub.views.py
+│  │  ├─ ai2_views.py
+│  │  ├─ ai_tools_views.py
+│  │  ├─ ai_views.py
+│  │  ├─ answer_views.py
+│  │  ├─ auth_views.py
+│  │  ├─ center_api_views.py
+│  │  ├─ data_views.py
+│  │  ├─ main_views.py
+│  │  ├─ predict_views.py
+│  │  └─ question_views.py
+│  └─ __init__.py
+├─ rag_docs
+│  └─ rag_store
+│     └─ chroma.sqlite3
+├─ rag_store
+│  └─ chroma.sqlite3
+├─ README.md
+├─ requirements.txt
+├─ requirements_serverless.txt
+├─ train_model.py
+├─ wsgi.py
+└─ xgb_performance_report.png
+
+```
+```
+childcenter
+├─ .dockerignore
+├─ .flaskenv
+├─ app.db
+├─ check_db.py
+├─ childcenter.zip
+├─ Clean_ML_Report.png
+├─ config.py
+├─ data
+│  ├─ child_centers_clean.json
+│  ├─ GRDP_15~22.csv
+│  ├─ master_2015_2022.csv
+│  ├─ predicted_child_user_2023_2030.csv
+│  ├─ 기초생활수급자_12~24.csv
+│  ├─ 네트워크 - 바로 가기.lnk
+│  ├─ 다문화가구_15~23.csv
+│  ├─ 등록인구(연령별_동별)_14~24.xlsx
+│  ├─ 시도_시군구_월별_이혼_11~24.xlsx
+│  ├─ 아동복지시설_06~24.csv
+│  ├─ 저소득_한부모가족_15~23.csv
+│  ├─ 지역아동센터_자치구별_데이터.xlsx
+│  ├─ 출생아수_06~24.csv
+│  └─ 학생_1만명당_사설학원수_10~24.csv
+├─ docker-compose.yml
+├─ dockerfile
+├─ Dockerfile.runtime
+├─ Dockerfile.worker
+├─ docs
+│  ├─ README.md
+│  ├─ requirement.txt
+│  ├─ SequenceDiagram.png
+│  ├─ UsecaseDiagram.png
+│  ├─ 개발스케줄,업무분장.xlsx
+│  ├─ 머신러닝 결과 보고서.docx
+│  ├─ 요구사항 정의서.xlsx
+│  ├─ 요구사항분석서.docx
+│  └─ 화면설계서.pptx
+├─ EDA.ipynb
+├─ Final_ML_Project_Report.png
+├─ final_model_performance_report.png
+├─ final_professional_report.png
+├─ final_project_report.png
+├─ folder_structure.txt
+├─ handler.py
+├─ insert_future_region_data.py
+├─ insert_region_data.py
+├─ instance
+│  ├─ app.db
+│  └─ local_dev.db
+├─ load_child_centers.py
+├─ migrations
+│  ├─ alembic.ini
+│  ├─ env.py
+│  ├─ README
+│  ├─ script.py.mako
+│  └─ versions
+│     ├─ 995318d08496_initial_tables.py
+│     └─ fee148399c62_add_users_and_qna_tables.py
+├─ models.ipynb
+├─ model_comparison_final.png
+├─ predicted_child_user_2023_2030_cagr.csv
+├─ preprocessing.ipynb
+├─ pybo
+│  ├─ forms.py
+│  ├─ ml
+│  │  ├─ future_predict.py
+│  │  ├─ future_predict_backup.py
+│  │  ├─ model_xgb.pkl
+│  │  ├─ predictor.py
+│  │  └─ python
+│  ├─ models.py
+│  ├─ rag_docs
+│  │  └─ 지역아동센터 지원 사업안내(정제본).txt
+│  ├─ rag_store
+│  │  ├─ 84cfeb60-01b8-4dcf-8360-32f2f8c75bf6
+│  │  │  ├─ data_level0.bin
+│  │  │  ├─ header.bin
+│  │  │  ├─ length.bin
+│  │  │  └─ link_lists.bin
+│  │  ├─ bde767b0-add2-4f07-a5d9-5aa020c43f38
+│  │  │  ├─ data_level0.bin
+│  │  │  ├─ header.bin
+│  │  │  ├─ length.bin
+│  │  │  └─ link_lists.bin
+│  │  └─ chroma.sqlite3
+│  ├─ service
+│  │  ├─ auth_service.py
+│  │  ├─ brief_facts_service.py
+│  │  ├─ data_service.py
+│  │  ├─ lc_chains.py
+│  │  ├─ lc_llm.py
+│  │  ├─ qna_service.py
+│  │  ├─ question_repository.py
+│  │  ├─ rag_ingest.py
+│  │  ├─ rag_ingest_db.py
+│  │  ├─ rag_service.py
+│  │  ├─ region_repository.py
+│  │  ├─ runpod_service.py
+│  │  ├─ user_repository.py
+│  │  └─ __init__.py
+│  ├─ static
+│  │  ├─ bootstrap-4.6.2-dist.zip
+│  │  ├─ bootstrap-icons.css
+│  │  ├─ bootstrap.bundle.js
+│  │  ├─ bootstrap.bundle.js.map
+│  │  ├─ bootstrap.bundle.min.js
+│  │  ├─ bootstrap.bundle.min.js.map
+│  │  ├─ bootstrap.min.css
+│  │  ├─ bootstrap.min.js
+│  │  ├─ css
+│  │  │  ├─ ai.css
+│  │  │  ├─ ai2.css
+│  │  │  ├─ base.css
+│  │  │  ├─ dashboard.css
+│  │  │  ├─ home.css
+│  │  │  ├─ predict.css
+│  │  │  └─ theme.css
+│  │  ├─ fonts
+│  │  │  ├─ bootstrap-icons.woff
+│  │  │  └─ bootstrap-icons.woff2
+│  │  ├─ images
+│  │  │  ├─ ai-hero.png
+│  │  │  ├─ bigdata.jpg
+│  │  │  ├─ carousel1.jpg
+│  │  │  ├─ carousel1_1.jpg
+│  │  │  ├─ carousel2.jpg
+│  │  │  ├─ carousel2_1.jpg
+│  │  │  ├─ carousel3.jpg
+│  │  │  ├─ find_image
+│  │  │  │  ├─ 27Qpq7pqCRfVf9Grzbgv9n-840-80.jpg.webp
+│  │  │  │  ├─ 61d3ad52a9f76fcc29b4cfb81e0f21ad.jpg
+│  │  │  │  ├─ ai-generated-8005084_1920.png
+│  │  │  │  ├─ ai-pennwest-2024.jpg
+│  │  │  │  ├─ Arte delle Equazioni Scientifiche Fantastiche di….jfif
+│  │  │  │  ├─ Artificial intelligence may be the most intricate….jfif
+│  │  │  │  ├─ deng-xiang--WXQm_NTK0U-unsplash.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_01.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_02.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_03.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_04.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_05.png
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_06.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_07.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_08.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_09.jpg
+│  │  │  │  ├─ KakaoTalk_20251124_125842479_10.jpg
+│  │  │  │  ├─ luke-chesser-JKUTrJ4vK00-unsplash.jpg
+│  │  │  │  ├─ pexels-rdne-7947663.jpg
+│  │  │  │  ├─ Skærmbillede-2017-09-04-kl.-16.00.22.png
+│  │  │  │  ├─ vecteezy_digital-business-image-with-graphs-and-diagrams-over-blue_25500634.jpg
+│  │  │  │  ├─ What the world will be like in 30 years, according….jfif
+│  │  │  │  └─ 🧠 Next-gen technology analyzes writing style DNA….jfif
+│  │  │  ├─ hero-introduce.jpg
+│  │  │  ├─ hero-predict.png
+│  │  │  ├─ hero-qna.jpg
+│  │  │  ├─ logo-black.png
+│  │  │  ├─ logo.png
+│  │  │  ├─ logo2.png
+│  │  │  ├─ logo3.png
+│  │  │  ├─ logo4.png
+│  │  │  ├─ logo5.png
+│  │  │  ├─ logo_cropped.png
+│  │  │  ├─ privacy-hero.jpg
+│  │  │  ├─ section2_1.jpg
+│  │  │  ├─ section2_2.jpg
+│  │  │  ├─ section3_qna.jpg
+│  │  │  └─ terms-hero.webp
+│  │  ├─ jquery-3.7.1.min.js
+│  │  ├─ js
+│  │  │  ├─ ai2.js
+│  │  │  ├─ Chart-bar.html
+│  │  │  ├─ Chart-line.html
+│  │  │  ├─ Chart-pie.html
+│  │  │  ├─ dashboard.js
+│  │  │  ├─ Multi-line.html
+│  │  │  └─ predict.js
+│  │  └─ style.css
+│  ├─ templates
+│  │  ├─ ai
+│  │  ├─ auth
+│  │  │  ├─ find_id.html
+│  │  │  ├─ login.html
+│  │  │  ├─ logout.html
+│  │  │  ├─ reset_password_change.html
+│  │  │  ├─ reset_password_verify.html
+│  │  │  └─ signup.html
+│  │  ├─ base.html
+│  │  ├─ form_errors.html
+│  │  ├─ main
+│  │  │  ├─ ai.html
+│  │  │  ├─ ai2.html
+│  │  │  ├─ dashboard.html
+│  │  │  ├─ home.html
+│  │  │  ├─ introduce.html
+│  │  │  └─ predict.html
+│  │  ├─ partials
+│  │  │  ├─ intro_content.html
+│  │  │  ├─ seoul_map.svg
+│  │  │  └─ seoul_map1.svg
+│  │  ├─ policy
+│  │  │  ├─ privacy.html
+│  │  │  └─ terms.html
+│  │  └─ question
+│  │     ├─ qna.html
+│  │     ├─ question_detail.html
+│  │     ├─ question_form.html
+│  │     └─ question_list.html
+│  ├─ views
+│  │  ├─ ai2_chat_views.py
+│  │  ├─ ai2_hub.views.py
+│  │  ├─ ai2_views.py
+│  │  ├─ ai_tools_views.py
+│  │  ├─ ai_views.py
+│  │  ├─ answer_views.py
+│  │  ├─ auth_views.py
+│  │  ├─ center_api_views.py
+│  │  ├─ data_views.py
+│  │  ├─ main_views.py
+│  │  ├─ predict_views.py
+│  │  └─ question_views.py
+│  └─ __init__.py
+├─ rag_docs
+│  └─ rag_store
+│     └─ chroma.sqlite3
+├─ rag_store
+│  └─ chroma.sqlite3
+├─ README.md
+├─ requirements.txt
+├─ requirements_serverless.txt
+├─ train_model.py
+├─ wsgi.py
+└─ xgb_performance_report.png
+
+```

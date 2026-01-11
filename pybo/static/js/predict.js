@@ -319,27 +319,26 @@ $(function () {
                 maintainAspectRatio: false,
                 plugins: {
                     legend: {
-                        labels: {
-                            font: { size: 11 }
-                        }
+                    labels: {
+                        color: "rgba(255,255,255,.88)"
+                    }
+                    },
+                    title: {
+                    display: false
                     }
                 },
                 scales: {
                     x: {
-                        ticks: {
-                            font: { size: 10 }
-                        }
+                    ticks: { color: "rgba(226,232,240,.70)" },
+                    grid: { color: "rgba(148,163,184,.14)" }
                     },
                     y: {
-                        ticks: {
-                            font: { size: 10 },
-                            callback: function (value) {
-                                return value.toLocaleString();
-                            }
-                        }
+                    ticks: { color: "rgba(226,232,240,.70)" },
+                    grid: { color: "rgba(148,163,184,.14)" }
                     }
                 }
             }
+
         });
     }
 

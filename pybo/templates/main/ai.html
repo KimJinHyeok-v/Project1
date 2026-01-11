@@ -1,369 +1,260 @@
-{# templates/ai/index.html #}
+{# templates/main/ai.html #}
 {% extends "base.html" %}
 {% block body_class %}hero-page{% endblock %}
 
 {% block extra_css %}
-<link rel="stylesheet" href="{{ url_for('static', filename='css/ai.css') }}">
-{% endblock %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/ai2.css') }}">
+<style>
+  /* 1. 레이아웃 및 헤더 간섭 방지 */
+  body.hero-page { background-color: #f1f5f9; padding-top: 0 !important; }
+  
+  .hero-section.hero-ai {
+    position: relative; height: 180px !important;
+    background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+    display: flex; align-items: center; z-index: 5;
+  }
 
+  .ai-layout-wrap { 
+    display: flex; gap: 20px; max-width: 1450px; 
+    margin: 40px auto; padding: 0 20px; 
+    align-items: flex-start; position: relative; z-index: 10;
+  }
+
+  /* 2. 왼쪽 채팅 박스 */
+  .chat-box-main { 
+    flex: 2; background: #1e293b; border: 1px solid #334155; 
+    border-radius: 20px; padding: 25px; position: relative; 
+    min-height: 800px; display: flex; flex-direction: column; overflow: hidden; 
+  }
+
+  /* 모델 선택 오버레이 및 카드 */
+  #modelOverlay {
+    position: absolute; top:0; left:0; width:100%; height:100%;
+    background: rgba(15, 23, 42, 0.98); z-index: 110; border-radius: 20px;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+  }
+  .model-card-btn {
+    background: #2d3748; border: 2px solid #4a5568; color: #cbd5e1;
+    padding: 12px 24px; border-radius: 12px; cursor: pointer; transition: 0.3s;
+  }
+  .model-card-btn.active {
+    background: #2563eb !important; border-color: #60a5fa !important; color: #fff !important;
+    box-shadow: 0 0 10px rgba(37, 99, 235, 0.5);
+  }
+
+  /* 하단 입력바 (줄바꿈 방지) */
+  .input-container-fixed { 
+    display: flex; align-items: stretch; gap: 10px; 
+    background: #0f172a; padding: 8px; border-radius: 12px; border: 1px solid #334155; 
+  }
+  .input-container-fixed input { flex: 1; background: transparent; border: none; color: white; padding: 10px; outline: none; }
+  .btn-send-fixed { width: 80px; font-weight: bold; white-space: nowrap; flex-shrink: 0; }
+
+  /* 3. 오른쪽 보고서 설정 및 시스템 상태 */
+  .report-config-side { flex: 0.8; background: #1e293b; border: 1px solid #334155; border-radius: 20px; padding: 25px; color: #fff; position: sticky; top: 100px; }
+  .status-text-soft { color: #d1d5db; font-size: 0.85rem; line-height: 1.6; }
+
+  /* 4. 상세 설정 슬라이드 패널 */
+  .parameter-slide-panel { 
+    position: absolute; top: 0; right: -420px; width: 400px; height: 100%; 
+    background: #1e293b; border-left: 1px solid #475569; z-index: 105; 
+    padding: 25px; color: #fff; transition: right 0.3s ease; overflow-y: auto; 
+  }
+  .parameter-slide-panel.active { right: 0; }
+  .val-blue { font-weight: 800; color: #60a5fa; }
+</style>
+{% endblock %}
 
 {% block content %}
 <section class="hero-section hero-ai">
-    <div class="hero-overlay"></div>
-    <div class="container hero-inner">
-        <h1 class="hero-title">생성형 AI</h1>
-    </div>
+  <div class="container"><h1 style="color:white; font-weight:800; margin:0; padding-left:20px;">생성형 AI 서비스</h1></div>
 </section>
 
-<div class = 'container mt-4'>
-    <p class = 'text-muted mb-4'> 
-        ...내용 블라블라 ...<br>
-    </p>
+<div class="ai-layout-wrap">
+  <div class="chat-box-main">
+    <div id="modelOverlay">
+      <h5 class="text-white mb-4">모델을 선택하세요</h5>
+      <div class="d-flex gap-2 mb-4">
+        <div class="model-card-btn" onclick="selectModel(this, 'base')">Base Model</div>
+        <div class="model-card-btn" onclick="selectModel(this, 'cp50')">Checkpoint 50</div>
+        <div class="model-card-btn" onclick="selectModel(this, 'cp100')">Checkpoint 100</div>
+      </div>
+      <button onclick="confirmStart()" class="btn btn-primary btn-lg px-5 font-weight-bold">채팅 시작</button>
+    </div>
 
-    <ul class="nav nav-tabs mb-4" id="aiFunctionTab" role ='tablist'>
-        <li class="nav-item" role="presentation">
-            <a class="nav-link active" id="gen-tab" data-toggle="tab" href="#gen" type="button" role="tab" aria-controls="gen" aria-selected="true">
-                1. 텍스트 생성
-            </a>
-        </li>
-        <li class = 'nav-item' role="presentation">
-            <a class="nav-link" id="trans-tab" data-toggle="tab" href="#trans" type="button" role="tab" aria-controls="trans" aria-selected="false">
-                2. 번역기
-            </a>
-        </li>
-        <li class='nav-item' role="presentation">
-            <a class="nav-link" id="ner-tab" data-toggle="tab" href="#ner" type="button" role="tab" aria-controls="ner" aria-selected="false">
-                3. 개체명 인식
-            </a>
-        </li>
-        <li class='nav-item' role="presentation">
-            <a class="nav-link" id="qa-tab" data-toggle="tab" href="#qa" type="button" role="tab" aria-controls="qa" aria-selected="false">
-                4. 질의응답
-            </a>
-        </li>
-        <li class='nav-item' role="presentation">
-            <a class="nav-link" id="sentiment-tab" data-toggle="tab" href="#sentiment" type="button" role="tab" aria-controls="sentiment" aria-selected="false">
-                5. 감성분석
-            </a>
-        </li>
-    </ul>
-
-    <!-- 텍스트생성 -->
-    <div class ='tab-content' id="aiFunctionTabContent">
-        <div class="tab-pane fade show active" id="gen" role="tabpanel" aria-labelledby="gen-tab">
-            <h4 class="mt-4 text-primary">텍스트 생성</h4>
-            <div class="form-group">
-                <label for="inputText" class="form-label">시작 문구 입력:</label>
-                <textarea class="form-control" id="inputText" rows="4" 
-                          placeholder="예: '오늘 철수는 친구와 즐겁게 놀았으며, 점심도 남김없이 다 먹었다. 선생님은...'" required></textarea>
-            </div>
-            
-            <button class="btn btn-dark mt-3" onclick="generateText()">AI 생성 시작</button>
-            
-            <h5 class="mt-5">생성 결과:</h5>
-            <div class="card p-4 bg-light">
-                <p id="resultArea" class="mb-0 text-break">결과가 여기에 표시됩니다.</p>
-            </div>
-            
-            <div id="loadingSpinner" class="spinner-border text-primary mt-3" role="status" style="display: none;">
-                <span class="visually-hidden">Loading...</span>
-            </div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+            <span id="activeModelBadge" class="badge badge-primary p-2">모델 미선택</span>
+            <button class="btn btn-sm btn-dark border-secondary ml-2" onclick="toggleParams()">⚙️ 파라미터 설정</button>
         </div>
-        <!-- 번역 -->
-        <div class="tab-pane fade" id="trans" role="tabpanel" aria-labelledby="trans-tab">
-            <h4 class="mt-4 text-primary">번역 기능</h4>
-            <div class="form-group">
-                <label for="trans_inputText" class="form-label">번역할 한국어 텍스트:</label>                 <textarea class="form-control" id="trans_inputText" rows="4" 
-                          placeholder="예: '오늘 급식은 아이들이 가장 좋아하는 카레가 나왔습니다.'" required></textarea>
-            </div>
-            
-            <button class="btn btn-dark mt-3" onclick="handleTranslate()">AI 번역 시작</button>             
-            <h5 class="mt-5">번역 결과 (영어):</h5>
-            <div class="card p-4 bg-light">
-                <p id="trans_resultArea" class="mb-0 text-break">번역 결과가 여기에 표시됩니다.</p>            </div>
-            
-            <div id="trans_loadingSpinner" class="spinner-border text-primary mt-3" role="status" style="display: none;">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-
-        <!-- 개체명 인식 -->
-        <div class="tab-pane fade" id="ner" role="tabpanel" aria-labelledby="ner-tab">
-            <h4 class="mt-4 text-primary">개체명 인식 (NER)</h4>
-            <div class="form-group">
-                <label for="ner_inputText" class="form-label">분석할 텍스트:</label>
-                <textarea class="form-control" id="ner_inputText" rows="4" 
-                    placeholder="예: '김철수 선생님은 2025년 5월 15일에 서울특별시 교육청에서 연수를 받았습니다.'" required></textarea>
-            </div>
-            
-            <button class="btn btn-dark mt-3" onclick="handleNER()">개체명 분석 시작</button>
-            
-            <h5 class="mt-5">인식 결과:</h5>
-            <div class="card p-4 bg-light">
-                <p id="ner_resultArea" class="mb-0 text-break">결과가 여기에 표시됩니다. (예: 김철수: 사람, 서울특별시: 장소, ...)</p>
-            </div>
-            
-            <div id="ner_loadingSpinner" class="spinner-border text-primary mt-3" role="status" style="display: none;">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-
-        <!-- 질의응답 -->
-        <div class="tab-pane fade" id="qa" role="tabpanel" aria-labelledby="qa-tab">
-            <h4 class="mt-4 text-primary">질의응답 (QA)</h4>
-            <div class="form-group">
-                <label for="qa_context" class="form-label">배경 텍스트 (지문):</label>
-                <textarea class="form-control" id="qa_context" rows="4" 
-                    placeholder="예: '지역아동센터의 여름 방학 프로그램은 7월 25일부터 8월 20일까지 운영되며, 주요 활동은 축구와 미술 수업입니다.'" required></textarea>
-            </div>
-            <div class="form-group mt-3">
-                <label for="qa_question" class="form-label">질문:</label>
-                <input type="text" class="form-control" id="qa_question" placeholder="예: 주요 활동은 무엇인가요?" required>
-            </div>
-            
-            <button class="btn btn-dark mt-3" onclick="handleQA()">답변 요청</button>
-            
-            <h5 class="mt-5">답변:</h5>
-            <div class="card p-4 bg-light">
-                <p id="qa_resultArea" class="mb-0 text-break">답변이 여기에 표시됩니다.</p>
-            </div>
-            
-            <div id="qa_loadingSpinner" class="spinner-border text-primary mt-3" role="status" style="display: none;">
-                <span class="visually-hidden">Loading...</span>
-            </div>
-        </div>
-
-        <!-- 감성분석 -->
-        <div class="tab-pane fade" id="sentiment" role="tabpanel" aria-labelledby="sentiment-tab">
-            <h4 class="mt-4 text-primary">감성분석</h4>
-            <div class="form-group">
-                <label for="sentiment_inputText" class="form-label">분석할 문장:</label>
-                <textarea class="form-control" id="sentiment_inputText" rows="4" 
-                    placeholder="예: '오늘 급식은 정말 맛있었고, 아이들이 모두 즐거워했습니다.'" required></textarea>
-            </div>
-            
-            <button class="btn btn-dark mt-3" onclick="handleSentiment()">감성 분석 시작</button>
-            
-            <h5 class="mt-5">분석 결과:</h5>
-            <div class="card p-4 bg-light">
-                <p id="sentiment_resultArea" class="mb-0 text-break">결과가 여기에 표시됩니다. (예: 긍정)</p>
-            </div>
-            
-            <div id="sentiment_loadingSpinner" class="spinner-border text-primary mt-3" role="status" style="display: none;">
-                <span class="visually-hidden">Loading...</span>
-            </div>
+        <div class="d-flex align-items-center">
+            <span id="geoDot" style="width:12px; height:12px; background:#666; border-radius:50%; display:inline-block; margin-right:8px;"></span>
+            <span id="geoText" class="text-white-50 small">위치 확인 대기</span>
         </div>
     </div>
 
+    <div id="chatLog" style="flex:1; background:#0f172a; border-radius:15px; margin-bottom:15px; overflow-y:auto; padding:20px;">
+        <div class="ai2-msg ai2-msg--bot"><div class="ai2-bubble">반갑습니다! 무엇을 도와드릴까요?</div></div>
+    </div>
 
-    <script>
-    function generateText() {
-        const inputText = document.getElementById('inputText').value;
-        const resultArea = document.getElementById('resultArea');
-        const loadingSpinner = document.getElementById('loadingSpinner');
+    <div class="input-container-fixed">
+      <input id="chatInput" type="text" placeholder="메시지를 입력하세요..." onkeydown="if(event.key==='Enter') sendChat()">
+      <button class="btn btn-primary btn-send-fixed" onclick="sendChat()">전송</button>
+    </div>
 
-        if (!inputText) {
-            resultArea.innerHTML = '<span class="text-danger">시작 문구를 입력해 주세요.</span>';
-            return;
-        }
+    <div id="paramPanel" class="parameter-slide-panel">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 class="m-0 text-info">상세 설정</h5>
+            <button class="btn btn-sm btn-outline-light" onclick="toggleParams()">닫기</button>
+        </div>
+        <div class="row mb-3">
+            <div class="col-6">
+                <label class="small text-white-50">창의성 (Temp): <span id="tVal" class="val-blue">0.7</span></label>
+                <input type="range" id="p_temp" class="custom-range" min="0.1" max="1.0" step="0.1" value="0.7" oninput="document.getElementById('tVal').innerText=this.value">
+            </div>
+            <div class="col-6">
+                <label class="small text-white-50">반복 억제: <span id="rpVal" class="val-blue">1.1</span></label>
+                <input type="range" id="p_rep" class="custom-range" min="1.0" max="2.0" step="0.1" value="1.1" oninput="document.getElementById('rpVal').innerText=this.value">
+            </div>
+        </div>
+        <div class="mb-4">
+            <label class="small text-white-50">최대 답변 길이: <span id="tkVal" class="val-blue">512</span></label>
+            <input type="range" id="p_max_tk" class="custom-range w-100" min="128" max="1024" step="128" value="512" oninput="document.getElementById('tkVal').innerText=this.value">
+        </div>
+        <hr class="border-secondary">
+        <div class="mb-3">
+            <label class="small" style="color:#4ade80">학습률 (LR): <span id="lrVal" class="val-blue" style="color:#4ade80!important">0.0001</span></label>
+            <input type="range" id="p_lr" class="custom-range w-100" min="0.00001" max="0.001" step="0.00001" value="0.0001" oninput="document.getElementById('lrVal').innerText=this.value">
+        </div>
+        <div class="row g-2 mb-3">
+            <div class="col-6"><label class="small text-white-50">Max Steps</label><input type="number" id="p_max_s" class="form-control form-control-sm bg-dark text-white border-secondary" value="100"></div>
+            <div class="col-6"><label class="small text-white-50">Logging Steps</label><input type="number" id="p_log_s" class="form-control form-control-sm bg-dark text-white border-secondary" value="1"></div>
+        </div>
+        <div class="row g-2 mb-4">
+            <div class="col-6"><label class="small text-white-50">Save Steps</label><input type="number" id="p_save_s" class="form-control form-control-sm bg-dark text-white border-secondary" value="50"></div>
+            <div class="col-6"><label class="small text-white-50">Eval Steps</label><input type="number" id="p_eval_s" class="form-control form-control-sm bg-dark text-white border-secondary" value="10"></div>
+        </div>
+        <div class="row g-2 mb-4">
+            <div class="col-6"><label class="small text-white-50">Optimizer</label><select class="form-control form-control-sm bg-dark text-white border-secondary"><option>adamw_8bit</option><option>adamw_torch</option></select></div>
+            <div class="col-6"><label class="small text-white-50">Eval Strategy</label><div class="small mt-1"><label class="mr-2"><input type="radio" name="ev" checked> steps</label><label><input type="radio" name="ev"> epoch</label></div></div>
+        </div>
+        <button class="btn btn-info w-100 font-weight-bold py-2 mb-3" onclick="applySettings()">설정 적용하기</button>
+    </div>
+  </div>
 
-        // UI 업데이트: 로딩 상태 표시
-        resultArea.innerHTML = 'AI가 문구를 생성 중입니다...';
-        loadingSpinner.style.display = 'block'; 
-
-        // ** /ai/api/generate-text 엔드포인트로 POST 요청 **
-        fetch('{{ url_for("ai.api_generate_text") }}', { 
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            // 요청 본문에 입력 텍스트 포함
-            body: JSON.stringify({ inputText: inputText }),
-        })
-        .then(response => {
-            // HTTP 상태 코드에 따라 오류 처리
-            if (!response.ok) {
-                // 4xx, 5xx 에러인 경우 JSON 응답을 읽어 오류 메시지를 반환
-                return response.json().then(errorData => {
-                    throw new Error(errorData.error || `HTTP Error! status: ${response.status}`);
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            // 성공 시 결과 표시
-            loadingSpinner.style.display = 'none'; 
-            resultArea.innerText = data.result; 
-        })
-        .catch(error => {
-            // 네트워크 오류 또는 서버 응답 오류 처리
-            loadingSpinner.style.display = 'none'; 
-            console.error('Error:', error);
-            resultArea.innerHTML = `<span class="text-danger">오류 발생: ${error.message || '네트워크 요청 실패'}</span>`;
-        });
-    }
-
-    // ----------------------------------------------------
-    // 번역
-
-    function handleTranslate() {
-        // 번역 탭의 고유 ID를 사용합니다.
-        const inputText = document.getElementById('trans_inputText').value; 
-        const resultArea = document.getElementById('trans_resultArea');
-        const loadingSpinner = document.getElementById('trans_loadingSpinner');
-
-        if (!inputText) {
-            resultArea.innerHTML = '<span class="text-danger">번역할 텍스트를 입력해 주세요.</span>';
-            return;
-        }
-
-        // UI 업데이트: 로딩 상태 표시
-        resultArea.innerHTML = 'AI가 번역 중입니다... (Colab 연결 중)';
-        loadingSpinner.style.display = 'block'; 
-
-        // /ai/api/translate-text 엔드포인트로 POST 요청
-        fetch('{{ url_for("ai.api_translate_text") }}', { 
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ inputText: inputText }),
-        })
-        .then(response => {
-            if (!response.ok) {
-                return response.json().then(errorData => {
-                    throw new Error(errorData.error || `HTTP Error! status: ${response.status}`);
-                });
-            }
-            return response.json();
-        })
-        .then(data => {
-            // 성공 시 결과 표시
-            loadingSpinner.style.display = 'none'; 
-            resultArea.innerText = data.result; 
-        })
-        .catch(error => {
-            // 오류 처리
-            loadingSpinner.style.display = 'none'; 
-            console.error('Translation Error:', error);
-            resultArea.innerHTML = `<span class="text-danger">번역 오류 발생: ${error.message || '네트워크 요청 실패'}</span>`;
-        });
-    }
-    // ----------------------------------------------------
-    // 3. 개체명 인식 (NER)
-    function handleNER() {
-        const inputText = document.getElementById('ner_inputText').value.trim(); 
-        const resultArea = document.getElementById('ner_resultArea');
-        const loadingSpinner = document.getElementById('ner_loadingSpinner');
-
-        if (!inputText) {
-            resultArea.innerHTML = '<span class="text-danger">분석할 텍스트를 입력해 주세요.</span>';
-            return;
-        }
-
-        resultArea.innerHTML = 'AI가 개체명을 인식 중입니다...';
-        loadingSpinner.style.display = 'block'; 
-
-        fetch('{{ url_for("ai.api_ner") }}', { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ inputText: inputText }),
-        })
-        .then(response => response.json().then(data => ({ ok: response.ok, data: data })))
-        .then(({ ok, data }) => {
-            loadingSpinner.style.display = 'none'; 
-            if (ok) {
-                resultArea.innerText = data.result; 
-            } else {
-                resultArea.innerHTML = `<span class="text-danger">오류 발생: ${data.error || '알 수 없는 서버 오류'}</span>`;
-            }
-        })
-        .catch(error => {
-            loadingSpinner.style.display = 'none'; 
-            console.error('NER Error:', error);
-            resultArea.innerHTML = `<span class="text-danger">네트워크 오류: ${error.message}</span>`;
-        });
-    }
-
-    // ----------------------------------------------------
-    // 4. 질의응답 (QA)
-    function handleQA() {
-        const context = document.getElementById('qa_context').value.trim();
-        const question = document.getElementById('qa_question').value.trim();
-        const resultArea = document.getElementById('qa_resultArea');
-        const loadingSpinner = document.getElementById('qa_loadingSpinner');
-
-        if (!context || !question) {
-            resultArea.innerHTML = '<span class="text-danger">배경 텍스트와 질문을 모두 입력해 주세요.</span>';
-            return;
-        }
-
-        resultArea.innerHTML = 'AI가 질문에 답변 중입니다...';
-        loadingSpinner.style.display = 'block'; 
-
-        fetch('{{ url_for("ai.api_qa") }}', { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ context: context, question: question }),
-        })
-        .then(response => response.json().then(data => ({ ok: response.ok, data: data })))
-        .then(({ ok, data }) => {
-            loadingSpinner.style.display = 'none'; 
-            if (ok) {
-                resultArea.innerText = data.result; 
-            } else {
-                resultArea.innerHTML = `<span class="text-danger">오류 발생: ${data.error || '알 수 없는 서버 오류'}</span>`;
-            }
-        })
-        .catch(error => {
-            loadingSpinner.style.display = 'none'; 
-            console.error('QA Error:', error);
-            resultArea.innerHTML = `<span class="text-danger">네트워크 오류: ${error.message}</span>`;
-        });
-    }
-
-    // ----------------------------------------------------
-    // 5. 감성분석 (Sentiment Analysis)
-    function handleSentiment() {
-        const inputText = document.getElementById('sentiment_inputText').value.trim(); 
-        const resultArea = document.getElementById('sentiment_resultArea');
-        const loadingSpinner = document.getElementById('sentiment_loadingSpinner');
-
-        if (!inputText) {
-            resultArea.innerHTML = '<span class="text-danger">분석할 텍스트를 입력해 주세요.</span>';
-            return;
-        }
-
-        resultArea.innerHTML = 'AI가 감성을 분석 중입니다...';
-        loadingSpinner.style.display = 'block'; 
-
-        fetch('{{ url_for("ai.api_sentiment") }}', { 
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ inputText: inputText }),
-        })
-        .then(response => response.json().then(data => ({ ok: response.ok, data: data })))
-        .then(({ ok, data }) => {
-            loadingSpinner.style.display = 'none'; 
-            if (ok) {
-                resultArea.innerText = data.result; 
-            } else {
-                resultArea.innerHTML = `<span class="text-danger">오류 발생: ${data.error || '알 수 없는 서버 오류'}</span>`;
-            }
-        })
-        .catch(error => {
-            loadingSpinner.style.display = 'none'; 
-            console.error('Sentiment Error:', error);
-            resultArea.innerHTML = `<span class="text-danger">네트워크 오류: ${error.message}</span>`;
-        });
-    }
-    // ----------------------------------------------------
-    </script>
-    {% endblock %}
-
-
-    {% block extra_js %}
+  <!-- <div class="report-config-side">
+    <h5 class="mb-4" style="color:#4ade80">보고서 초안 생성</h5>
+    <div class="mb-3">
+        <label class="small text-white-50">자치구 선택</label>
+        <select id="dist" class="form-control bg-dark text-white border-secondary">
+            <option value="" disabled selected>자치구 선택</option>
+            <option>강남구</option><option>강동구</option><option>강북구</option><option>강서구</option>
+            <option>관악구</option><option>광진구</option><option>구로구</option><option>금천구</option>
+            <option>노원구</option><option>도봉구</option><option>동대문구</option><option>동작구</option>
+            <option>마포구</option><option>서대문구</option><option>서초구</option><option>성동구</option>
+            <option>성북구</option><option>송파구</option><option>양천구</option><option>영등포구</option>
+            <option>용산구</option><option>은평구</option><option>종로구</option><option>중구</option><option>중랑구</option>
+        </select>
+    </div>
+    <div class="row mb-4">
+        <div class="col-6"><label class="small text-white-50">시작연도</label><select id="yf" class="form-control bg-dark text-white border-secondary" onchange="sync()"></select></div>
+        <div class="col-6"><label class="small text-white-50">종료연도</label><select id="yt" class="form-control bg-dark text-white border-secondary" onchange="sync()"></select></div>
+    </div>
+    <button class="btn btn-success w-100 font-weight-bold py-2 mb-4" onclick="genRep()">보고서 초안 생성</button>
     
-    {% endblock %}
+    <div class="status-text-soft">
+        <div class="mb-2">● 위치 서비스: <b style="color:#4ade80">정상 (ON)</b></div>
+        <div class="mb-2">● 엔진: Llama-3-8B</div>
+    </div>
+  </div> -->
+</div>
 
+<script>
+let curM = null, uLat = null, uLon = null;
 
+function toggleParams() { document.getElementById('paramPanel').classList.toggle('active'); }
+
+function selectModel(btn, id) {
+    document.querySelectorAll('.model-card-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    curM = id;
+}
+
+function confirmStart() {
+    if(!curM) return alert("모델을 선택하세요.");
+    document.getElementById('activeModelBadge').innerText = "Active: " + curM.toUpperCase();
+    document.getElementById('modelOverlay').style.display = 'none';
+    initGeo(); initY();
+}
+
+function initY() {
+    const f = document.getElementById('yf'), t = document.getElementById('yt');
+    if(f.options.length > 0) return;
+    for(let i=2023; i<=2030; i++) { f.add(new Option(i, i)); t.add(new Option(i, i)); }
+    t.value = 2030;
+}
+
+function sync() {
+    const f = document.getElementById('yf'), t = document.getElementById('yt');
+    if (parseInt(f.value) > parseInt(t.value)) t.value = f.value;
+}
+
+function initGeo() {
+    if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(pos => {
+            uLat = pos.coords.latitude; uLon = pos.coords.longitude;
+            const dot = document.getElementById('geoDot');
+            dot.style.backgroundColor = '#4ade80'; dot.style.boxShadow = '0 0 10px #4ade80';
+            document.getElementById('geoText').innerText = "위치 확인됨";
+            document.getElementById('geoText').style.color = "#4ade80";
+        });
+    }
+}
+
+function applySettings() {
+    alert("파라미터 설정이 모델에 적용되었습니다.");
+    toggleParams();
+}
+
+async function sendChat() {
+    const inp = document.getElementById('chatInput');
+    const msg = inp.value.trim();
+    if(!msg || !curM) return;
+    appendMsg('user', msg); inp.value = '';
+    try {
+        const res = await fetch("/ai2/chat", {
+            method: "POST", headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ 
+                message: msg, model_type: curM, lat: uLat, lon: uLon,
+                temp: document.getElementById('p_temp').value
+            })
+        });
+        const data = await res.json();
+        appendMsg('bot', data.text);
+    } catch(e) { appendMsg('bot', "B2C 서버 응답 오류"); }
+}
+
+async function genRep() {
+    const d = document.getElementById('dist').value;
+    const y1 = document.getElementById('yf').value, y2 = document.getElementById('yt').value;
+    if(!d) return alert("자치구를 선택하세요.");
+    appendMsg('user', `${d} (${y1}~${y2}) 보고서 생성을 시작합니다.`);
+    try {
+        const res = await fetch("/ai2/b2b/report/generate", {
+            method: "POST", headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({ district: d, year_from: y1, year_to: y2, report_type: "approval" })
+        });
+        const data = await res.json();
+        appendMsg('bot', data.report || "생성 실패");
+    } catch(e) { appendMsg('bot', "통신 에러"); }
+}
+
+function appendMsg(sender, text) {
+    const log = document.getElementById('chatLog');
+    const div = document.createElement('div');
+    div.className = sender === 'user' ? 'ai2-msg ai2-msg--user' : 'ai2-msg ai2-msg--bot';
+    div.innerHTML = `<div class="ai2-bubble" style="white-space:pre-wrap;">${text}</div>`;
+    log.appendChild(div); log.scrollTop = log.scrollHeight;
+}
+</script>
+{% endblock %}
