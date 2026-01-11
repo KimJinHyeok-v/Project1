@@ -1,0 +1,87 @@
+/* static/ai.css - 2차 개선: 남색 계열 강화 */
+
+/* 1. 전체 컨테이너: 약간의 둥근 모서리와 깊은 그림자 */
+.container.mt-4 {
+    padding: 40px;
+    background-color: #ffffff; 
+    border-radius: 15px; /* 모서리 더 둥글게 */
+    box-shadow: 0 10px 30px rgba(28, 61, 109, 0.2); /* 그림자 더 강조 */
+    margin-top: 30px !important;
+    margin-bottom: 60px;
+    border: none; /* 외부 테두리 제거 */
+}
+
+/* 2. 섹션 제목: 일관된 진한 남색 */
+.tab-content h4 {
+    color: #1C3D6D !important; 
+    font-weight: 700;
+    margin-bottom: 30px !important;
+    padding-bottom: 10px;
+    border-bottom: 3px solid #F0F4F8; /* 연하고 깔끔한 구분선 */
+}
+
+/* 3. 입력/출력 텍스트 영역 */
+.form-control {
+    border: 1px solid #d0d6e0;
+    border-radius: 10px;
+    padding: 18px 15px;
+    font-size: 1.05rem;
+}
+
+.form-control:focus {
+    border-color: #2A5288; 
+    box-shadow: 0 0 0 0.2rem rgba(42, 82, 136, 0.35); /* 포커스 그림자 강조 */
+}
+
+/* 4. 탭 네비게이션: 현대적이고 깔끔하게 */
+.nav-tabs {
+    border-bottom: 1px solid #e0e6ed; /* 탭 아래 얇은 기본선 */
+}
+.nav-tabs .nav-link {
+    color: #495057; 
+    border: none;
+    padding: 12px 18px;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+/* 활성화 탭: 진한 남색 선으로 강조 */
+.nav-tabs .nav-link.active {
+    color: #1C3D6D; 
+    border-bottom: 4px solid #1C3D6D; /* 활성화 탭 선을 더 두껍게 */
+    background-color: transparent !important;
+}
+
+.nav-tabs .nav-link:hover {
+    color: #1C3D6D;
+}
+
+
+/* 5. 버튼 스타일: 둥글고 시각적으로 강조 */
+.btn-dark {
+    background-color: #2A5288; 
+    border-color: #2A5288;
+    color: white;
+    font-weight: bold;
+    padding: 14px 35px; /* 버튼 크기 키우기 */
+    border-radius: 50px; /* 매우 둥글게 */
+    letter-spacing: 0.5px;
+    transition: all 0.3s;
+    box-shadow: 0 4px 10px rgba(42, 82, 136, 0.3); /* 버튼에 그림자 추가 */
+}
+
+.btn-dark:hover {
+    background-color: #1C3D6D; 
+    border-color: #1C3D6D;
+    box-shadow: 0 6px 15px rgba(42, 82, 136, 0.4);
+}
+
+/* 6. 결과 영역: 명확한 구분을 위해 왼쪽 세로줄 강조 */
+.card.p-4.bg-light {
+    margin-top: 25px;
+    padding: 25px !important;
+    border: 1px solid #dcdcdc;
+    border-left: 8px solid #2A5288; /* 왼쪽 세로줄 두껍게 */
+    background-color: #f8f9fa !important;
+    border-radius: 10px;
+}

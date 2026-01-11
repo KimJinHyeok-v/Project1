@@ -1,0 +1,67 @@
+static/css/theme_navy.css
+
+/* 전역 색상 토큰 */
+:root{
+  --site-bg: #07111f;
+  --site-bg-2: #0a1a33;
+  --site-text: rgba(255,255,255,.92);
+  --site-muted: rgba(226,232,240,.65);
+  --site-border: rgba(148,163,184,.18);
+}
+
+/* 전체 배경(톤온톤) */
+html, body{
+  background: radial-gradient(1200px 600px at 20% 0%,
+              rgba(47,107,255,.10), rgba(7,17,31,0) 60%),
+              linear-gradient(180deg, var(--site-bg-2), var(--site-bg)) !important;
+  color: var(--site-text);
+}
+
+/* 부트스트랩 기본 흰 배경 컨테이너가 비치지 않게 */
+.container, .container-fluid{
+  background: transparent;
+}
+
+/* 기본 카드/패널 톤온톤 */
+.card{
+  background: rgba(255,255,255,.04);
+  border: 1px solid var(--site-border);
+  border-radius: 16px;
+}
+
+/* 기본 텍스트 톤 */
+.text-muted, .small.text-muted{
+  color: var(--site-muted) !important;
+}
+
+/* 폼 기본 톤 */
+.form-control{
+  background: rgba(255,255,255,.06);
+  border: 1px solid var(--site-border);
+  color: var(--site-text);
+}
+.form-control::placeholder{
+  color: rgba(226,232,240,.45);
+}
+
+/* 네비바(네가 쓰는 base.html 구조에 따라 class명은 다를 수 있음)
+   아래는 일반적인 bootstrap navbar 기준 */
+.navbar{
+  background: rgba(7,17,31,.55);
+  border-bottom: 1px solid var(--site-border);
+  backdrop-filter: blur(10px);
+}
+.navbar .nav-link, .navbar-brand{
+  color: var(--site-text) !important;
+}
+.navbar .nav-link:hover{
+  color: #fff !important;
+}
+
+/* 드롭다운도 톤 맞추기(있으면) */
+.dropdown-menu{
+  background: rgba(10,26,51,.95);
+  border: 1px solid var(--site-border);
+}
+.dropdown-item{ color: var(--site-text); }
+.dropdown-item:hover{ background: rgba(255,255,255,.06); }
